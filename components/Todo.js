@@ -1,4 +1,5 @@
 import { createButton, formatDateToCustomFormat } from "../utils.js";
+import parseTodoView from "./TodoList.js";
 
 function TodoEndButtons(type) {
   const end = document.createElement("div");
@@ -18,7 +19,14 @@ function TodoEndButtons(type) {
   return end;
 }
 
-function TodoHeader(label, isChecked, todoType) {
+function handleOnCheck(label, isChecked) {
+  const index = label - 1;
+  const todos = JSON.parse(localStorage.getItem("todos"));
+  todos[index].done = isChecked;
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function TodoHeader(label, todoType, isChecked) {
   const todoHeader = document.createElement("div");
   todoHeader.className = "todo-header";
 
@@ -29,8 +37,12 @@ function TodoHeader(label, isChecked, todoType) {
 
   //checkbox
   const todoChecked = document.createElement("input");
+  todoChecked.addEventListener("change", () =>
+    handleOnCheck(label, todoChecked.checked)
+  );
   todoChecked.type = "checkbox";
   todoChecked.checked = isChecked;
+
   start.appendChild(todoChecked);
 
   todoHeader.appendChild(start);
@@ -62,28 +74,36 @@ function TodoFooter(createdAt) {
   return todoFooter;
 }
 
+function TodoCard(label, todoType, todo) {
+  const todoContainer = document.createElement("div");
+  todoContainer.className = "todo-card";
+
+  // todo Headers >> label, checkbox, edit, pin
+  const todoHeader = TodoHeader(label, todoType, todo.done);
+  todoContainer.appendChild(todoHeader);
+
+  // todo content
+  const todoContent = TodoContent(todo.text, todoType);
+  todoContainer.appendChild(todoContent);
+
+  // todo footer
+  const todoFooter = TodoFooter(todo.created_at);
+  todoContainer.appendChild(todoFooter);
+
+  return todoContainer;
+}
+
 export default function ViewTodo(todoType, todos) {
   const todoList = document.createElement("div");
   todoList.className = "todo-list";
+  todoList.classList.add(`${todoType}-todo-list`);
+  todoList.id = `${todoType}-todo-view`;
 
   for (let i = 0; i < todos.length; i++) {
-    // div label
-    const todoContainer = document.createElement("div");
-    todoContainer.className = "todo-container";
-
-    // todo Headers >> label, checkbox, edit, pin
-    const todoHeader = TodoHeader(i + 1, todos[i].done, todoType);
-    todoContainer.appendChild(todoHeader);
-
-    // todo content
-    const todoContent = TodoContent(todos[i].text, todoType);
-    todoContainer.appendChild(todoContent);
-
-    // todo footer
-    const todoFooter = TodoFooter(todos[i].created_at);
-    todoContainer.appendChild(todoFooter);
-
+    const todoContainer = TodoCard(i + 1, todoType, todos[i]);
     todoList.appendChild(todoContainer);
   }
   return todoList;
 }
+
+export { TodoCard };

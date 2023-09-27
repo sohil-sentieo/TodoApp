@@ -15,12 +15,13 @@ function createInput(type, placeholder, className, id) {
 }
 
 function formatDateToCustomFormat(date) {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString().slice(-2);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const seconds = date.getSeconds().toString().padStart(2, "0");
+  const dateObj = new Date(date);
+  const day = dateObj.getDate().toString().padStart(2, "0");
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  const year = dateObj.getFullYear().toString().slice(-2);
+  const hours = dateObj.getHours().toString().padStart(2, "0");
+  const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+  const seconds = dateObj.getSeconds().toString().padStart(2, "0");
 
   const customFormat = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
@@ -74,15 +75,16 @@ const TODOS = [
     updated_at: UPDATED_AT,
   },
 ];
-const filterMap = {
+const filterTodoMap = {
   pending: (items) => items.filter((item) => !item.done),
   pinned: (items) => items.filter((item) => item.pinned),
   done: (items) => items.filter((item) => item.done),
 };
 
 const todoContainerHeaderMap = {
+  pending: "Pending Items",
   pinned: "Pinned Items",
-  done: "Done",
+  done: "Done Items",
 };
 
 export {
@@ -90,6 +92,6 @@ export {
   createInput,
   TODOS,
   formatDateToCustomFormat,
-  filterMap,
+  filterTodoMap,
   todoContainerHeaderMap,
 };

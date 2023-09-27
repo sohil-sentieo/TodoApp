@@ -15,18 +15,20 @@ $font-size: 16px;
     margin-right: 5px;
 }
 
-.body-container{
+.app-body-container{
     display: flex;
     justify-content: space-between;
+
 }
 
-.container{
-    max-width: 48%;
+.main-container{
+    flex-grow:1;
+    max-width: 50%;
     margin: 0px 20px;
 }
 
 
-.header {
+.app-header {
     text-align: center;
 }
 
@@ -50,7 +52,17 @@ $font-size: 16px;
     width: 50%;
 }
 
-.todo-container{
+.todo-list{
+    height:300px;
+    overflow-y: scroll;
+}
+
+.pending-todo-list{
+    height:50%;
+}
+
+.todo-card{
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content:space-around;
@@ -59,31 +71,27 @@ $font-size: 16px;
     margin: 10px 5px 10px 0px;
     padding: 0 10px;
     height:100px;
-}
-
-.todo-header{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.todo-footer{
-    display:flex;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-.todo-date{
-    color: rgb(148,146,146);
-}
-
-.todo-content{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%; 
-    padding: 3px 20px;
-}
-.todo-content.done{
-    text-decoration: line-through;
+    .todo-header{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .todo-footer{
+        display:flex;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+    .todo-date{
+        color: rgb(148,146,146);
+    }
+    .todo-content{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%; 
+        padding: 3px 20px;
+    }
+    .todo-content.done{
+        text-decoration: line-through;
+    }
 }

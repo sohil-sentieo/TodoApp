@@ -1,14 +1,15 @@
-.body-container {
+.app-body-container {
   display: flex;
   justify-content: space-between;
 }
 
-.container {
-  max-width: 48%;
+.main-container {
+  flex-grow: 1;
+  max-width: 50%;
   margin: 0px 20px;
 }
 
-.header {
+.app-header {
   text-align: center;
 }
 
@@ -43,7 +44,17 @@
   width: 50%;
 }
 
-.todo-container {
+.todo-list {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.pending-todo-list {
+  height: 50%;
+}
+
+.todo-card {
+  background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -53,32 +64,27 @@
   padding: 0 10px;
   height: 100px;
 }
-
-.todo-header {
+.todo-card .todo-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-
-.todo-footer {
+.todo-card .todo-footer {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 }
-
-.todo-date {
+.todo-card .todo-date {
   color: rgb(148, 146, 146);
 }
-
-.todo-content {
+.todo-card .todo-content {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
   padding: 3px 20px;
 }
-
-.todo-content.done {
+.todo-card .todo-content.done {
   text-decoration: line-through;
 }
 

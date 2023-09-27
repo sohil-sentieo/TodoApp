@@ -1,4 +1,5 @@
 import { createInput, createButton } from "../utils.js";
+import { TodoCard } from "./Todo.js";
 
 function handleAddTodo(inputTag) {
   const todo = {
@@ -8,12 +9,17 @@ function handleAddTodo(inputTag) {
     created_at: new Date(),
     updated_at: null,
   };
+
   if ("todos" in localStorage) {
     const currentTodo = JSON.parse(localStorage.getItem("todos"));
     localStorage.setItem("todos", JSON.stringify([...currentTodo, todo]));
   } else {
     localStorage.setItem("todos", JSON.stringify([todo]));
   }
+  const todoCount = JSON.parse(localStorage.getItem("todos")).length;
+  const pendingTodoList = document.getElementById("pending-todo-view");
+  const todoCard = TodoCard(todoCount, "pending", todo);
+  pendingTodoList.appendChild(todoCard);
 }
 
 export default function AddTodo() {
