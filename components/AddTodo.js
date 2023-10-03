@@ -2,7 +2,9 @@ import { createInput, createButton } from "../utils.js";
 import { TodoCard } from "./Todo.js";
 
 function handleAddTodo(inputTag) {
-  const todo = {
+  const todoKey = Date.now().toString();
+  const todo = {};
+  todo[todoKey] = {
     text: inputTag.value,
     pinned: false,
     done: false,
@@ -12,14 +14,16 @@ function handleAddTodo(inputTag) {
 
   if ("todos" in localStorage) {
     const currentTodo = JSON.parse(localStorage.getItem("todos"));
-    localStorage.setItem("todos", JSON.stringify([...currentTodo, todo]));
+    localStorage.setItem("todos", JSON.stringify({ ...currentTodo, ...todo }));
   } else {
-    localStorage.setItem("todos", JSON.stringify([todo]));
+    localStorage.setItem("todos", JSON.stringify(todo));
   }
-  const todoCount = JSON.parse(localStorage.getItem("todos")).length;
+  const todoCount =
+    document.getElementById("pending-todo-view").children.length + 1;
   const pendingTodoList = document.getElementById("pending-todo-view");
-  const todoCard = TodoCard(todoCount, "pending", todo);
+  const todoCard = TodoCard(todoCount, "pending", todo[todoKey], todoKey);
   pendingTodoList.appendChild(todoCard);
+  inputTag.value = "";
 }
 
 export default function AddTodo() {

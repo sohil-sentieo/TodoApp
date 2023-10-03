@@ -91,7 +91,9 @@ $font-size: 16px;
         max-width: 100%; 
         padding: 3px 20px;
     }
-    .todo-content.done{
+}
+.done-todo-list{
+    .todo-content{
         text-decoration: line-through;
     }
 }

@@ -1,5 +1,10 @@
 import { createButton, createInput } from "../utils.js";
 
+function finishOnClickHandler() {
+  const currTodos = JSON.parse(localStorage.getItem("todos"));
+  const newTodos = currTodos.map((todo) => [...todo, ...{ done: true }]);
+}
+
 export default function NavigationBar() {
   const div = document.createElement("div");
   // search bar
@@ -23,6 +28,7 @@ export default function NavigationBar() {
   // all done button
   const finishButton = createButton("Mark all as done", "button");
   div.appendChild(finishButton);
+  finishButton.addEventListener("click", finishOnClickHandler);
 
   return div;
 }

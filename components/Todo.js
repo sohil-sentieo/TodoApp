@@ -1,32 +1,107 @@
-import { createButton, formatDateToCustomFormat } from "../utils.js";
-import parseTodoView from "./TodoList.js";
+import {
+  createButton,
+  formatDateToCustomFormat,
+  filterTodoMap,
+} from "../utils.js";
 
-function TodoEndButtons(type) {
+function pinOnClickHandler(todoKey) {
+  const newTodos = JSON.parse(localStorage.getItem("todos"));
+  newTodos[todoKey].pinned = true;
+
+  localStorage.setItem("todos", JSON.stringify(newTodos));
+
+  const currentCard = document.getElementById(`todo-card-${todoKey}`);
+  currentCard.remove();
+  const pinnedTodoList = document.getElementById(`pinned-todo-view`);
+  const pinnedCount = pinnedTodoList.children.length;
+  const todoCard = TodoCard(
+    pinnedCount + 1,
+    "pinned",
+    newTodos[todoKey],
+    todoKey
+  );
+
+  pinnedTodoList.appendChild(todoCard);
+}
+
+function unpinOnClickHandler(todoKey) {
+  const newTodos = JSON.parse(localStorage.getItem("todos"));
+  newTodos[todoKey].pinned = false;
+
+  localStorage.setItem("todos", JSON.stringify(newTodos));
+
+  const currentCard = document.getElementById(`todo-card-${todoKey}`);
+  currentCard.remove();
+  const pendingTodoList = document.getElementById("pending-todo-view");
+  const pendingCount = pendingTodoList.children.length;
+  const todoCard = TodoCard(
+    pendingCount + 1,
+    "pending",
+    newTodos[todoKey],
+    todoKey
+  );
+  pendingTodoList.appendChild(todoCard);
+}
+
+function removeOnClickHandler(todoKey) {
+  const todos = JSON.parse(localStorage.getItem("todos"));
+  todos[todoKey].done = false;
+  localStorage.setItem("todos", JSON.stringify(todos));
+  const todoCard = document.getElementById(`todo-card-${todoKey}`);
+  todoCard.remove();
+
+  const todoType = todos[todoKey].pinned ? "pinned" : "pending";
+  const todoList = document.getElementById(`${todoType}-todo-view`);
+  const label = todoList.children.length + 1;
+  const pendingCard = TodoCard(label, todoType, todos[todoKey], todoKey);
+  todoList.appendChild(pendingCard);
+}
+
+function TodoEndButtons(todoType, todoKey) {
   const end = document.createElement("div");
-  if (type === "pending") {
+  if (todoType === "pending") {
     const editButton = createButton("Edit", "button-secondary");
+    editButton.id = `edit-todo-${todoKey}`;
     const pinButton = createButton("Pin", "button-secondary");
+    pinButton.id = `pin-todo-${todoKey}`;
+    pinButton.addEventListener("click", () => pinOnClickHandler(todoKey));
     end.appendChild(editButton);
     end.appendChild(pinButton);
-  } else if (type === "pinned") {
+  } else if (todoType === "pinned") {
     const unpinButton = createButton("Unpin", "button-secondary");
+    unpinButton.id = `unpin-todo-${todoKey}`;
+    console.log(todoKey, todoType);
+    unpinButton.addEventListener("click", () => unpinOnClickHandler(todoKey));
     end.appendChild(unpinButton);
-  } else if (type === "done") {
+  } else if (todoType === "done") {
     const removeButton = createButton("Remove", "button-secondary");
+    removeButton.id = `remove-todo-${todoKey}`;
+    removeButton.addEventListener("click", () => removeOnClickHandler(todoKey));
     end.appendChild(removeButton);
   }
 
   return end;
 }
 
-function handleOnCheck(label, isChecked) {
-  const index = label - 1;
+function handleOnCheck(label, isChecked, todoKey) {
   const todos = JSON.parse(localStorage.getItem("todos"));
-  todos[index].done = isChecked;
+  todos[todoKey].done = isChecked;
   localStorage.setItem("todos", JSON.stringify(todos));
+  const todoCard = document.getElementById(`todo-card-${todoKey}`);
+  todoCard.remove();
+  if (isChecked) {
+    const doneTodoList = document.getElementById("done-todo-view");
+    const doneCard = TodoCard(label, "done", todos[todoKey], todoKey);
+    doneTodoList.appendChild(doneCard);
+  } else {
+    const todoType = todos[todoKey].pinned ? "pinned" : "pending";
+    const todoList = document.getElementById(`${todoType}-todo-view`);
+    const todoCard = TodoCard(label, todoType, todos[todoKey], todoKey);
+    todoList.appendChild(todoCard);
+  }
 }
 
-function TodoHeader(label, todoType, isChecked) {
+function TodoHeader(label, todoType, isChecked, todoKey) {
   const todoHeader = document.createElement("div");
   todoHeader.className = "todo-header";
 
@@ -38,7 +113,7 @@ function TodoHeader(label, todoType, isChecked) {
   //checkbox
   const todoChecked = document.createElement("input");
   todoChecked.addEventListener("change", () =>
-    handleOnCheck(label, todoChecked.checked)
+    handleOnCheck(label, todoChecked.checked, todoKey)
   );
   todoChecked.type = "checkbox";
   todoChecked.checked = isChecked;
@@ -48,7 +123,7 @@ function TodoHeader(label, todoType, isChecked) {
   todoHeader.appendChild(start);
 
   //edit & pin button
-  const end = TodoEndButtons(todoType);
+  const end = TodoEndButtons(todoType, todoKey);
   todoHeader.appendChild(end);
 
   return todoHeader;
@@ -57,7 +132,6 @@ function TodoHeader(label, todoType, isChecked) {
 function TodoContent(content, todoType) {
   const todoContent = document.createElement("div");
   todoContent.className = "todo-content";
-  todoContent.classList.add(todoType);
   todoContent.innerText = content;
   return todoContent;
 }
@@ -74,12 +148,13 @@ function TodoFooter(createdAt) {
   return todoFooter;
 }
 
-function TodoCard(label, todoType, todo) {
+function TodoCard(label, todoType, todo, todoKey) {
   const todoContainer = document.createElement("div");
   todoContainer.className = "todo-card";
+  todoContainer.id = `todo-card-${todoKey}`;
 
   // todo Headers >> label, checkbox, edit, pin
-  const todoHeader = TodoHeader(label, todoType, todo.done);
+  const todoHeader = TodoHeader(label, todoType, todo.done, todoKey);
   todoContainer.appendChild(todoHeader);
 
   // todo content
@@ -99,8 +174,14 @@ export default function ViewTodo(todoType, todos) {
   todoList.classList.add(`${todoType}-todo-list`);
   todoList.id = `${todoType}-todo-view`;
 
-  for (let i = 0; i < todos.length; i++) {
-    const todoContainer = TodoCard(i + 1, todoType, todos[i]);
+  const keys = Object.keys(todos);
+  let count = 1;
+  for (let i = 0; i < keys.length; i++) {
+    const todoKey = keys[i];
+    if (!filterTodoMap[todoType](todos[todoKey])) {
+      continue;
+    }
+    const todoContainer = TodoCard(count++, todoType, todos[todoKey], todoKey);
     todoList.appendChild(todoContainer);
   }
   return todoList;

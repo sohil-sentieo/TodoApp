@@ -76,9 +76,9 @@ const TODOS = [
   },
 ];
 const filterTodoMap = {
-  pending: (items) => items.filter((item) => !item.done),
-  pinned: (items) => items.filter((item) => item.pinned),
-  done: (items) => items.filter((item) => item.done),
+  pending: (item) => !item.done,
+  pinned: (item) => item.pinned,
+  done: (item) => item.done,
 };
 
 const todoContainerHeaderMap = {
