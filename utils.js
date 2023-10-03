@@ -1,3 +1,5 @@
+import ViewTodo from "./components/Todo.js";
+
 function createButton(text, className) {
   const button = document.createElement("button");
   button.innerText = text;
@@ -26,6 +28,26 @@ function formatDateToCustomFormat(date) {
   const customFormat = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
   return customFormat;
+}
+
+function parseTodoView(todoType, todoContainer) {
+  let todos = JSON.parse(localStorage.getItem("todos"));
+  todos = todos !== null ? todos : {};
+
+  const containerHeader = document.createElement("h2");
+  containerHeader.innerText = todoContainerHeaderMap[todoType];
+  todoContainer.appendChild(containerHeader);
+
+  const todosView = ViewTodo(todoType, todos);
+  todoContainer.appendChild(todosView);
+}
+
+function parseViews() {
+  const todoViews = Object.keys(todoContainerHeaderMap);
+  for (let todoView of todoViews) {
+    const viewContainer = document.getElementById(`${todoView}-todo-container`);
+    parseTodoView(todoView, viewContainer);
+  }
 }
 
 // view pane
@@ -76,8 +98,8 @@ const TODOS = [
   },
 ];
 const filterTodoMap = {
-  pending: (item) => !item.done,
-  pinned: (item) => item.pinned,
+  pending: (item) => !item.done && !item.pinned,
+  pinned: (item) => item.pinned && !item.done,
   done: (item) => item.done,
 };
 
@@ -94,4 +116,6 @@ export {
   formatDateToCustomFormat,
   filterTodoMap,
   todoContainerHeaderMap,
+  parseTodoView,
+  parseViews,
 };

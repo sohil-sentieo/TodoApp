@@ -1,7 +1,6 @@
-import { TODOS } from "./utils.js";
+import { parseTodoView, parseViews } from "./utils.js";
 import AddTodo from "./components/AddTodo.js";
 import NavigationBar from "./components/NavigationBar.js";
-import parseTodoView from "./components/TodoList.js";
 
 const root = document.getElementById("root");
 
@@ -32,7 +31,7 @@ mainContainer.appendChild(document.createElement("hr"));
 const pendingView = document.createElement("div");
 pendingView.id = "pending-todo-container";
 mainContainer.appendChild(pendingView);
-parseTodoView("pending", pendingView);
+// parseTodoView("pending", pendingView);
 
 const sideContainer = document.createElement("div");
 sideContainer.className = "main-container";
@@ -41,9 +40,10 @@ bodyContainer.appendChild(sideContainer);
 const pinnedContainer = document.createElement("div");
 pinnedContainer.id = "pinned-todo-container";
 sideContainer.appendChild(pinnedContainer);
-parseTodoView("pinned", pinnedContainer);
+// parseTodoView("pinned", pinnedContainer);
 
 const doneContainer = document.createElement("div");
 doneContainer.id = "done-todo-container";
 sideContainer.appendChild(doneContainer);
-parseTodoView("done", doneContainer);
+// parseTodoView("done", doneContainer);
+parseViews();
