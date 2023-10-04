@@ -1,4 +1,5 @@
 import { createInput, createButton } from "../utils.js";
+import { TODO_STORAGE_KEY } from "../config.js";
 import { TodoCard } from "./Todo.js";
 
 function handleAddTodo(inputTag) {
@@ -12,11 +13,14 @@ function handleAddTodo(inputTag) {
     updated_at: null,
   };
 
-  if ("todos" in localStorage) {
-    const currentTodo = JSON.parse(localStorage.getItem("todos"));
-    localStorage.setItem("todos", JSON.stringify({ ...currentTodo, ...todo }));
+  if (TODO_STORAGE_KEY in localStorage) {
+    const currentTodo = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
+    localStorage.setItem(
+      TODO_STORAGE_KEY,
+      JSON.stringify({ ...currentTodo, ...todo })
+    );
   } else {
-    localStorage.setItem("todos", JSON.stringify(todo));
+    localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todo));
   }
   const todoCount =
     document.getElementById("pending-todo-view").children.length + 1;

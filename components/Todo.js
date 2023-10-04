@@ -1,14 +1,11 @@
-import {
-  createButton,
-  formatDateToCustomFormat,
-  filterTodoMap,
-} from "../utils.js";
+import { createButton, formatDateToCustomFormat } from "../utils.js";
+import { TODO_STORAGE_KEY } from "../config.js";
 
 function pinOnClickHandler(todoKey) {
-  const newTodos = JSON.parse(localStorage.getItem("todos"));
+  const newTodos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
   newTodos[todoKey].pinned = true;
 
-  localStorage.setItem("todos", JSON.stringify(newTodos));
+  localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(newTodos));
 
   const currentCard = document.getElementById(`todo-card-${todoKey}`);
   currentCard.remove();
@@ -25,10 +22,10 @@ function pinOnClickHandler(todoKey) {
 }
 
 function unpinOnClickHandler(todoKey) {
-  const newTodos = JSON.parse(localStorage.getItem("todos"));
+  const newTodos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
   newTodos[todoKey].pinned = false;
 
-  localStorage.setItem("todos", JSON.stringify(newTodos));
+  localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(newTodos));
 
   const currentCard = document.getElementById(`todo-card-${todoKey}`);
   currentCard.remove();
@@ -44,9 +41,9 @@ function unpinOnClickHandler(todoKey) {
 }
 
 function removeOnClickHandler(todoKey) {
-  const todos = JSON.parse(localStorage.getItem("todos"));
+  const todos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
   todos[todoKey].done = false;
-  localStorage.setItem("todos", JSON.stringify(todos));
+  localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
   const todoCard = document.getElementById(`todo-card-${todoKey}`);
   todoCard.remove();
 
@@ -70,7 +67,6 @@ function TodoEndButtons(todoType, todoKey) {
   } else if (todoType === "pinned") {
     const unpinButton = createButton("Unpin", "button-secondary");
     unpinButton.id = `unpin-todo-${todoKey}`;
-    console.log(todoKey, todoType);
     unpinButton.addEventListener("click", () => unpinOnClickHandler(todoKey));
     end.appendChild(unpinButton);
   } else if (todoType === "done") {
@@ -84,9 +80,10 @@ function TodoEndButtons(todoType, todoKey) {
 }
 
 function handleOnCheck(label, isChecked, todoKey) {
-  const todos = JSON.parse(localStorage.getItem("todos"));
+  const todos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
   todos[todoKey].done = isChecked;
-  localStorage.setItem("todos", JSON.stringify(todos));
+  todos[todoKey].pinned = false;
+  localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
   const todoCard = document.getElementById(`todo-card-${todoKey}`);
   todoCard.remove();
   if (isChecked) {
@@ -178,9 +175,9 @@ export default function ViewTodo(todoType, todos) {
   let count = 1;
   for (let i = 0; i < keys.length; i++) {
     const todoKey = keys[i];
-    if (!filterTodoMap[todoType](todos[todoKey])) {
-      continue;
-    }
+    // if (!filterTodoMap[todoType](todos[todoKey])) {
+    //   continue;
+    // }
     const todoContainer = TodoCard(count++, todoType, todos[todoKey], todoKey);
     todoList.appendChild(todoContainer);
   }

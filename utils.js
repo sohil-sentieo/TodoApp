@@ -1,4 +1,5 @@
 import ViewTodo from "./components/Todo.js";
+import { TODO_STORAGE_KEY } from "./config.js";
 
 function createButton(text, className) {
   const button = document.createElement("button");
@@ -30,23 +31,43 @@ function formatDateToCustomFormat(date) {
   return customFormat;
 }
 
-function parseTodoView(todoType, todoContainer) {
-  let todos = JSON.parse(localStorage.getItem("todos"));
-  todos = todos !== null ? todos : {};
+function getTodos(storageKey, searchContent, todoType) {
+  const todos = JSON.parse(localStorage.getItem(storageKey));
+  let filteredTodos = {};
+  const keys = Object.keys(todos);
+  for (let key of keys) {
+    if (!filterTodoMap[todoType](todos[key])) {
+      continue;
+    }
+    if (!searchContent) {
+      filteredTodos[key] = todos[key];
+      continue;
+    }
 
+    if (todos[key].text.toLowerCase().includes(searchContent.toLowerCase())) {
+      filteredTodos[key] = todos[key];
+    }
+  }
+
+  return filteredTodos;
+}
+
+function parseTodoView(todoType, todoContainer, searchContent) {
+  todoContainer.innerHTML = "";
   const containerHeader = document.createElement("h2");
   containerHeader.innerText = todoContainerHeaderMap[todoType];
   todoContainer.appendChild(containerHeader);
 
-  const todosView = ViewTodo(todoType, todos);
+  const filteredTodos = getTodos(TODO_STORAGE_KEY, searchContent, todoType);
+  const todosView = ViewTodo(todoType, filteredTodos);
   todoContainer.appendChild(todosView);
 }
 
-function parseViews() {
+function parseViews(searchContent = "") {
   const todoViews = Object.keys(todoContainerHeaderMap);
   for (let todoView of todoViews) {
     const viewContainer = document.getElementById(`${todoView}-todo-container`);
-    parseTodoView(todoView, viewContainer);
+    parseTodoView(todoView, viewContainer, searchContent);
   }
 }
 
