@@ -15,13 +15,17 @@ function finishOnClickHandler() {
 function searchOnClickHandler() {
   const searchInput = document.getElementById("search-todo-input");
   const searchValue = searchInput.value;
-  searchInput.value = "";
   parseViews(searchValue);
 }
 
 function resetOnClickHandler() {
   const searchInput = document.getElementById("search-todo-input");
   searchInput.value = "";
+  parseViews();
+}
+
+function clearOnClickHandler() {
+  localStorage.setItem(TODO_STORAGE_KEY, null);
   parseViews();
 }
 
@@ -48,9 +52,16 @@ export default function NavigationBar() {
   div.appendChild(resetButton);
 
   // all done button
-  const finishButton = createButton("Mark all as done", "button");
+  const finishButton = createButton("Mark all as done", "button-inline");
   div.appendChild(finishButton);
   finishButton.addEventListener("click", finishOnClickHandler);
+
+  const clearTodos = createButton(
+    "Clear all todos",
+    "button-inline button-danger"
+  );
+  clearTodos.addEventListener("click", clearOnClickHandler);
+  div.appendChild(clearTodos);
 
   return div;
 }

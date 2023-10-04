@@ -1,6 +1,7 @@
-import { parseViews } from "./utils.js";
+import { parseViews, initializeCKEditor } from "./utils.js";
 import AddTodo from "./components/AddTodo.js";
 import NavigationBar from "./components/NavigationBar.js";
+import EditModal from "./components/EditModal.js";
 
 const root = document.getElementById("root");
 
@@ -13,11 +14,22 @@ root.appendChild(heading);
 // body ()
 const bodyContainer = document.createElement("div");
 bodyContainer.className = "app-body-container";
+bodyContainer.id = "app-body-container";
 root.appendChild(bodyContainer);
 
 const mainContainer = document.createElement("main");
 mainContainer.className = "main-container";
 bodyContainer.appendChild(mainContainer);
+
+// hidden modal
+const editModal = EditModal();
+bodyContainer.appendChild(editModal);
+
+const overlay = document.createElement("div");
+overlay.className = "overlay hidden";
+bodyContainer.appendChild(overlay);
+
+// initialize ck editor
 
 const addTodoBar = AddTodo();
 mainContainer.appendChild(addTodoBar);
@@ -45,3 +57,4 @@ doneContainer.id = "done-todo-container";
 sideContainer.appendChild(doneContainer);
 
 parseViews();
+initializeCKEditor();

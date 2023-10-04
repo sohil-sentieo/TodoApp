@@ -22,17 +22,17 @@ function formatDateToCustomFormat(date) {
   const day = dateObj.getDate().toString().padStart(2, "0");
   const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
   const year = dateObj.getFullYear().toString().slice(-2);
-  const hours = dateObj.getHours().toString().padStart(2, "0");
-  const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-  const seconds = dateObj.getSeconds().toString().padStart(2, "0");
 
-  const customFormat = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  const customFormat = `${day}-${month}-${year}`;
 
   return customFormat;
 }
 
 function getTodos(storageKey, searchContent, todoType) {
   const todos = JSON.parse(localStorage.getItem(storageKey));
+  if (!todos) {
+    return {};
+  }
   let filteredTodos = {};
   const keys = Object.keys(todos);
   for (let key of keys) {
@@ -130,6 +130,14 @@ const todoContainerHeaderMap = {
   done: "Done Items",
 };
 
+function initializeCKEditor() {
+  ClassicEditor.create(document.querySelector("#todo-modal-input"))
+    .then((editor) => {
+      window.editor = editor;
+    })
+    .catch((error) => console.log(error));
+}
+
 export {
   createButton,
   createInput,
@@ -139,4 +147,5 @@ export {
   todoContainerHeaderMap,
   parseTodoView,
   parseViews,
+  initializeCKEditor,
 };
