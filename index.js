@@ -29,8 +29,6 @@ const overlay = document.createElement("div");
 overlay.className = "overlay hidden";
 bodyContainer.appendChild(overlay);
 
-// initialize ck editor
-
 const addTodoBar = AddTodo();
 mainContainer.appendChild(addTodoBar);
 

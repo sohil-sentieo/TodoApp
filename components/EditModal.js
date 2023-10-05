@@ -21,6 +21,7 @@ function saveModalHandler() {
 
   const todos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY));
   todos[todoKey].text = data;
+  todos[todoKey].created_at = new Date();
   localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
   parseViews();
   modal.classList.add("hidden");

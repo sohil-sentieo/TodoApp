@@ -1,4 +1,4 @@
-import ViewTodo from "./components/Todo.js";
+import TodoList from "./components/TodoList.js";
 import { TODO_STORAGE_KEY } from "./config.js";
 
 function createButton(text, className) {
@@ -54,12 +54,12 @@ function getTodos(storageKey, searchContent, todoType) {
 
 function parseTodoView(todoType, todoContainer, searchContent) {
   todoContainer.innerHTML = "";
-  const containerHeader = document.createElement("h2");
+  const containerHeader = document.createElement("h3");
   containerHeader.innerText = todoContainerHeaderMap[todoType];
   todoContainer.appendChild(containerHeader);
 
   const filteredTodos = getTodos(TODO_STORAGE_KEY, searchContent, todoType);
-  const todosView = ViewTodo(todoType, filteredTodos);
+  const todosView = TodoList(todoType, filteredTodos);
   todoContainer.appendChild(todosView);
 }
 

@@ -1,6 +1,6 @@
 import { createInput, createButton } from "../utils.js";
 import { TODO_STORAGE_KEY } from "../config.js";
-import { TodoCard } from "./Todo.js";
+import TodoCard from "./Todo.js";
 
 function handleAddTodo(inputTag) {
   const todoKey = Date.now().toString();

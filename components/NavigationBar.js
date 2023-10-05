@@ -51,9 +51,12 @@ export default function NavigationBar() {
   resetButton.addEventListener("click", resetOnClickHandler);
   div.appendChild(resetButton);
 
+  const todosControl = document.createElement("div");
+  div.appendChild(todosControl);
+
   // all done button
   const finishButton = createButton("Mark all as done", "button-inline");
-  div.appendChild(finishButton);
+  todosControl.appendChild(finishButton);
   finishButton.addEventListener("click", finishOnClickHandler);
 
   const clearTodos = createButton(
@@ -61,7 +64,7 @@ export default function NavigationBar() {
     "button-inline button-danger"
   );
   clearTodos.addEventListener("click", clearOnClickHandler);
-  div.appendChild(clearTodos);
+  todosControl.appendChild(clearTodos);
 
   return div;
 }
