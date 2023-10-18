@@ -1,5 +1,6 @@
+import PageBar from "./components/PageBar.js";
 import TodoList from "./components/TodoList.js";
-import { TODO_STORAGE_KEY } from "./config.js";
+import { TODO_STORAGE_KEY, PAGE_KEYS, PAGE_SIZES } from "./config.js";
 
 function createButton(text, className) {
   const button = document.createElement("button");
@@ -52,6 +53,20 @@ function getTodos(storageKey, searchContent, todoType) {
   return filteredTodos;
 }
 
+function getPageTodos(todos, todoType) {
+  let currentPageNumber = getTodoTypeCurrentPage(todoType);
+  const pageSize = PAGE_SIZES[todoType];
+  currentPageNumber = parseInt(currentPageNumber) - 1;
+  const filteredKeys = Object.keys(todos).slice(
+    currentPageNumber * pageSize,
+    (currentPageNumber + 1) * pageSize
+  );
+
+  return Object.fromEntries(
+    Object.entries(todos).filter(([key, value]) => filteredKeys.includes(key))
+  );
+}
+
 function parseTodoView(todoType, todoContainer, searchContent) {
   todoContainer.innerHTML = "";
   const containerHeader = document.createElement("h3");
@@ -59,11 +74,17 @@ function parseTodoView(todoType, todoContainer, searchContent) {
   todoContainer.appendChild(containerHeader);
 
   const filteredTodos = getTodos(TODO_STORAGE_KEY, searchContent, todoType);
-  const todosView = TodoList(todoType, filteredTodos);
+  const currentPageTodos = getPageTodos(filteredTodos, todoType);
+  const todosView = TodoList(todoType, currentPageTodos);
   todoContainer.appendChild(todosView);
+
+  const pageScroll = PageBar(todoType, filteredTodos);
+  todoContainer.appendChild(pageScroll);
 }
 
-function parseViews(searchContent = "") {
+function parseViews() {
+  const searchInput = document.getElementById("search-todo-input");
+  const searchContent = searchInput.value;
   const todoViews = Object.keys(todoContainerHeaderMap);
   for (let todoView of todoViews) {
     const viewContainer = document.getElementById(`${todoView}-todo-container`);
@@ -138,6 +159,21 @@ function initializeCKEditor() {
     .catch((error) => console.log(error));
 }
 
+function initializePageInput() {
+  localStorage.setItem(PAGE_KEYS.pending, 1);
+  localStorage.setItem(PAGE_KEYS.pinned, 1);
+  localStorage.setItem(PAGE_KEYS.done, 1);
+}
+
+function bootstrap() {
+  initializeCKEditor();
+  initializePageInput();
+}
+
+function getTodoTypeCurrentPage(todoType) {
+  return localStorage.getItem(PAGE_KEYS[todoType]);
+}
+
 export {
   createButton,
   createInput,
@@ -147,5 +183,6 @@ export {
   todoContainerHeaderMap,
   parseTodoView,
   parseViews,
-  initializeCKEditor,
+  bootstrap,
+  getTodoTypeCurrentPage,
 };

@@ -1,4 +1,4 @@
-import { parseViews, initializeCKEditor } from "./utils.js";
+import { parseViews, bootstrap } from "./utils.js";
 import AddTodo from "./components/AddTodo.js";
 import NavigationBar from "./components/NavigationBar.js";
 import EditModal from "./components/EditModal.js";
@@ -55,4 +55,4 @@ doneContainer.id = "done-todo-container";
 sideContainer.appendChild(doneContainer);
 
 parseViews();
-initializeCKEditor();
+bootstrap();

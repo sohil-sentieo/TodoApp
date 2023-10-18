@@ -16,5 +16,6 @@ export default function TodoList(todoType, todos) {
     const todoContainer = TodoCard(count++, todoType, todos[todoKey], todoKey);
     todoList.appendChild(todoContainer);
   }
+
   return todoList;
 }

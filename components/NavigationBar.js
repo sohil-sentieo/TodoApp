@@ -13,9 +13,7 @@ function finishOnClickHandler() {
 }
 
 function searchOnClickHandler() {
-  const searchInput = document.getElementById("search-todo-input");
-  const searchValue = searchInput.value;
-  parseViews(searchValue);
+  parseViews();
 }
 
 function resetOnClickHandler() {

@@ -1,4 +1,4 @@
-import { createInput, createButton } from "../utils.js";
+import { createInput, createButton, parseViews } from "../utils.js";
 import { TODO_STORAGE_KEY } from "../config.js";
 import TodoCard from "./Todo.js";
 
@@ -28,6 +28,8 @@ function handleAddTodo(inputTag) {
   const todoCard = TodoCard(todoCount, "pending", todo[todoKey], todoKey);
   pendingTodoList.appendChild(todoCard);
   inputTag.value = "";
+
+  parseViews();
 }
 
 export default function AddTodo() {
